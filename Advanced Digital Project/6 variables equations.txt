@@ -1,0 +1,62 @@
+//for prime
+	assign TA = (~direction & count[4] &  count[3] & count[2] & count[1] & count[0]) + (~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+ (direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0]);//T4
+	
+	assign TB = (~direction & ~count[4] &  ~count[3] & count[2] & count[1] & count[0]) + (~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+(~direction & count[4] &  ~count[3] & count[2] & count[1] & ~count[0]) + (~direction & count[4] &  count[3] & count[2] & count[1] & count[0])
+	+(direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & ~count[4] &  count[3] & ~count[2] & count[1] & count[0]) 
+	+(direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0]) + (direction & count[4] &  count[3] & count[2] & ~count[1] & count[0]);
+	
+	assign TC = (~direction & ~count[4] &  ~count[3] & count[1] & count[0]) + (~direction &  ~count[3] & ~count[2] & count[1] & count[0])
+	+(~count[4] &  count[3] & ~count[2] & count[1] & count[0]) + (~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+ (direction & ~count[4] & count[2] & ~count[1] & count[0]) + (~direction & count[4] &  count[3] & count[2] & count[1] & count[0])
+	+ (direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0])
+	+ (direction & count[4] &  ~count[3] & count[2] & count[1] & count[0]);
+	
+	assign TD = (~direction & ~count[4] &  ~count[3] & count[2] & count[1] & count[0])+
+	(~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])+
+	(count[4] &  count[3] & count[2] & ~count[1] & count[0])+
+	(direction & ~count[4] &  ~count[3] & count[2] & count[0])+
+	(direction & ~count[4] &  count[2] & ~count[1] & count[0])+
+	(direction & count[4] &  count[3] & count[2] & count[0])+
+	(~direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0])+
+	(~direction & count[4] &  ~count[3] & count[2] & count[1] & ~count[0])+
+	(direction & count[4] &  ~count[3] & ~count[2] & count[1] & count[0]);	
+	
+	assign TE = (~count[4] & ~count[3] & ~count[2] & count[1] & ~count[0])+
+	(direction & ~count[4] &  ~count[3] & ~count[2] & count[1])+
+	(~direction & count[4] &  count[3] & count[2] & count[1] & count[0]);
+
+
+
+
+
+//for fibonacci
+
+	T4 = BC'DE'F + A'B'CDE'F + AB'C'D'E'F'
+	T3 = A'B'DE'F + AB'CD'E'F' + ABC'DE'F
+	T2 = A'C'DE'F + B'CD'E'F' + AB'D'E'F' + AB'DE'F + A'B'C'D'EF
+	T1 = A'B'C'D'F + AB'C'D'EF' + AB'C'DE'F
+	T0 =  B'C'D'E' + B'C'D'F' + B'D'E'F' + AB'C'D' + A'C'DE'F + AB'CDE'F
+	
+	A = direction
+	B = Q4
+	C = Q3
+	D = Q2
+	E = Q1
+	F = Q0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

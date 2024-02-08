@@ -1,0 +1,229 @@
+I did not use T flip flop, instead I used a clock and a reset on every module that I have created, The reason for this is that I found that writing the
+code using flip flops would take way much time than what I had at the moment I started writing the project code. The functionality still works as you 
+wished, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6 varibles
+
+
+
+
+
+
+T4 = A'BCDEF + AB'C'D'EF'
+T3 = A'B'C'DEF + A'B'CDE'F + A'BC'DEF' + A'BCDEF + AB'C'D'EF' + AB'CD'EF + ABC'D'E'F + ABCDE'F
+T2 = A'B'C'EF + A'C'D'EF + B'CD'EF + B'CDE'F + AB'DE'F + A'BCDEF + AB'C'D'EF' + ABC'D'E'F + ABC'DEF
+T1 = A'B'D'EF + B'C'DE'F + BCDE'F + AB'C'DF + AB'DE'F + ABCDF + A'BC'D'E'F + A'BC'DEF' + ABC'D'EF
+T0 = B'C'D'EF' + AB'C'D'E + A'BCDEF
+
+________________________________________________________________________________________________________________________________
+5 variables:
+
+
+T4 = BCE
+T3 = B'CDE + ACDE + A'BCD'E
+T2 = A'B'DE + A'C'DE + B'C'DE + A'BCD'E + ABCDE
+T1 = A'C'DE + A'B'CD'E + AB'C'D'E + AB'CDE + ABCD'E
+T0 = A'B'C'DE' + ABCDE
+A = Q4
+B = Q3
+C = Q2
+D = Q1
+E = Q0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+____________________________________________________________________________________________________________________________________________________
+module Counter(input clk, input reset, input sequence_select, input count_direction,input Enable, output reg [4:0] count);
+
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      count <= 6'b000000; // Reset the counter to initial value	= 0	 
+	  end	 
+	  
+	else if(Enable) begin
+		if(count_direction == 1) begin // count upwards
+    if (sequence_select == 0) // Prime Numbers Sequence
+      count <= count + 1; ///////////////////////////////
+    else // Fibonacci Sequence
+      count <= count - 1;///////////////////////////// 
+	end
+	
+	else if(count_direction == 0)begin // count downwards
+		if (sequence_select == 0) // Prime Numbers Sequence
+      count <= count + 1;///////////////////////////////
+    else // Fibonacci Sequence
+      count <= count - 1; /////////////////////////////////
+	end
+	end//else if end
+  end//always end
+  
+endmodule	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module Counter(clk,reset,select,direction,Enable,count);
+	input clk,reset,select,direction,Enable;
+	output [4:0] count;
+	reg TA,TB,TC,TD,TE;
+	
+	//assign TA = (~count[4] & count[3] & count[2] & ~count[1] & count[0]) + (count[4] & count[3] & count[2] & count[1] & count[0]);//T4 
+			
+	//assign TB = (~count[3] & count[2] & count[1] & count[0]) + (count[4] & count[2] & count[1] & count[0]) + (~count[4] & count[3] & count[2] & ~count[1] & count[0]);	 
+			
+	//assign TC =	(~count[4] & ~count[3] & count[1] & count[0]) +	(~count[4] & ~count[2] & count[1] & count[0]) + (~count[3] & ~count[2] & count[1] & count[0])
+	//+ (~count[4] & count[3] & count[2] & ~count[1] & count[0]) + (count[4] & count[3] & count[2] & count[1] & count[0]);  
+			
+	//assign TD = (~count[4] & ~count[2] & count[1] & count[0]) + (~count[4] & ~count[3] & count[2] & ~count[1] & count[0]) + (count[4] & ~count[3] & ~count[2] & ~count[1] & count[0])
+	//+ (count[4] & ~count[3] & count[2] & count[1] & count[0]) + (count[4] & count[3] & count[2] & ~count[1] & count[0]);
+			
+	//assign TE =  (~count[4] & ~count[3] & ~count[2] & count[1] & ~count[0]) + (count[4] & count[3] & count[2] & count[1] & count[0]);
+	
+	assign TA = count[1];
+	assign TB = count[4];
+	assign TC = count[3];
+	assign TD = count[2];
+	assign TE = count[1];
+
+	//always @* begin
+	//if(Enable == 1) begin
+//		if(select == 0) begin//prime numbers	 
+	//		if(direction == 1) begin
+
+	//end
+	//end	
+	//end
+	//end
+	
+    T_FlipFlop T4 (.T(TA), .clk(clk), .reset(reset), .Q(count[0]));
+    T_FlipFlop T3 (.T(TB), .clk(clk), .reset(reset), .Q(count[1]));
+    T_FlipFlop T2 (.T(TC), .clk(clk), .reset(reset), .Q(count[2]));
+    T_FlipFlop T1 (.T(TD), .clk(clk), .reset(reset), .Q(count[3]));
+    T_FlipFlop T0 (.T(TE), .clk(clk), .reset(reset), .Q(count[4]));
+	
+endmodule
+	
+	
+module T_FlipFlop(T,clk,reset,Q);
+	input T,clk,reset;
+	output reg Q;
+	
+	always @(posedge clk) begin
+		if(!reset)
+			Q = 2;
+		else
+			Q = T^Q;
+		end
+		
+endmodule
+	
+
+module Counter_Testbench;
+    reg clk, reset, select, direction, Enable;
+    wire [4:0] count;
+
+    Counter counter(clk, reset, select, direction, Enable, count);
+
+    // Clock generation
+    always #5 clk = ~clk;
+
+    // Testbench stimuli
+    initial begin
+        clk = 0;
+        reset = 0;
+        select = 0;
+        direction = 1;
+        Enable = 1;  // Enable the counter
+		
+        
+        #10 reset = 0;  // Assert reset
+        #20 reset = 0;  // Deassert reset, start counting
+        
+        // Test counting prime numbers sequence in ascending order
+        select = 0;
+        //direction = 0;
+        Enable = 1;
+        #100; // Wait for desired number of cycles
+        
+        $finish; // End simulation
+    end
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

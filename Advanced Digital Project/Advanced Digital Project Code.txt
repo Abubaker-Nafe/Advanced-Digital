@@ -1,0 +1,143 @@
+//Nafe Abubaker_1200047	 
+
+
+module Counter(clk,reset,count,direction,Enable,selection);
+	input clk,reset,direction,Enable,selection;//selection = 0 --> Prime ,, selection = 1 --> fibonacci
+	output [4:0] count;
+	
+	reg TA,TB,TC,TD,TE;	   
+	
+	parameter selection = 0; // 0 for Prime, 1 for Fibonacci
+		
+	if(Enable) begin
+		if(selection == 0) begin //prime number
+	
+	assign TA = ((~direction & count[4] &  count[3] & count[2] & count[1] & count[0]) + (~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+ (direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0]));//T4
+	
+	assign TB = ((~direction & ~count[4] &  ~count[3] & count[2] & count[1] & count[0]) + (~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+(~direction & count[4] &  ~count[3] & count[2] & count[1] & ~count[0]) + (~direction & count[4] &  count[3] & count[2] & count[1] & count[0])
+	+(direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & ~count[4] &  count[3] & ~count[2] & count[1] & count[0]) 
+	+(direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0]) + (direction & count[4] &  count[3] & count[2] & ~count[1] & count[0]));
+	
+	assign TC = ((~direction & ~count[4] &  ~count[3] & count[1] & count[0]) + (~direction &  ~count[3] & ~count[2] & count[1] & count[0])
+	+(~count[4] &  count[3] & ~count[2] & count[1] & count[0]) + (~count[4] &  count[3] & count[2] & ~count[1] & count[0])
+	+ (direction & ~count[4] & count[2] & ~count[1] & count[0]) + (~direction & count[4] &  count[3] & count[2] & count[1] & count[0])
+	+ (direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0]) + (direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0])
+	+ (direction & count[4] &  ~count[3] & count[2] & count[1] & count[0]));
+	
+	assign TD = ((~direction & ~count[4] &  ~count[3] & count[2] & count[1] & count[0])+
+	(~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0])+
+	(count[4] &  count[3] & count[2] & ~count[1] & count[0])+
+	(direction & ~count[4] &  ~count[3] & count[2] & count[0])+
+	(direction & ~count[4] &  count[2] & ~count[1] & count[0])+
+	(direction & count[4] &  count[3] & count[2] & count[0])+
+	(~direction & count[4] &  ~count[3] & ~count[2] & ~count[1] & count[0])+
+	(~direction & count[4] &  ~count[3] & count[2] & count[1] & ~count[0])+
+	(direction & count[4] &  ~count[3] & ~count[2] & count[1] & count[0]));	
+	
+	assign TE = ((~count[4] & ~count[3] & ~count[2] & count[1] & ~count[0])+
+	(direction & ~count[4] &  ~count[3] & ~count[2] & count[1])+
+	(~direction & count[4] &  count[3] & count[2] & count[1] & count[0]));  
+	end	 
+	
+	else if (selection == 1) begin
+		assign TA = ((count[4] &  ~count[3] & count[2] & ~count[1] & count[0]) + (~direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0]) 
+		+ (direction & ~count[4] &  ~count[3] & ~count[2] & ~count[1] & ~count[0])); 
+		
+		assign TB = ((~direction & ~count[4] & count[2] & ~count[1] & count[0]) + (direction & ~count[4] &  count[3] & ~count[2] & ~count[1] & ~count[0]) 
+		+ (direction & count[4] &  ~count[3] & count[2] & ~count[1] & count[0]));
+		
+		assign TC = ((~direction & ~count[3] & count[2] & ~count[1] & count[0]) + (~count[4] &  count[3] & ~count[2] & ~count[1] & ~count[0])
+		+ (direction & ~count[4] & ~count[2] & ~count[1] & ~count[0]) + (direction & ~count[4] & count[2] & ~count[1] & count[0])
+		+ (~direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & count[0]));
+		
+		assign TD = ((~direction & ~count[4] &  ~count[3] & ~count[2] & count[0]) + (direction & ~count[4] &  ~count[3] & ~count[2] & count[1] & ~count[0])
+		+ (direction & ~count[4] &  ~count[3] & count[2] & ~count[1] & count[0]));
+		
+		assign TE = ((~count[4] &  ~count[3] & ~count[2] & ~count[1]) + (~count[4] &  ~count[3] & ~count[2] & ~count[0])
+		+ (~count[4] & ~count[2] & ~count[1] & ~count[0]) + (direction & ~count[4] &  ~count[3] & ~count[2]) 
+		+ (~direction & ~count[3] & count[2] & ~count[1] & count[0]) + (direction & ~count[4] &  count[3] & count[2] & ~count[1] & count[0]));
+			
+	end
+	end	   
+
+	T_FlipFlop T4 (.T(TA), .clk(clk), .reset(reset), .Q(count[0]));
+    T_FlipFlop T3 (.T(TB), .clk(clk), .reset(reset), .Q(count[1]));
+    T_FlipFlop T2 (.T(TC), .clk(clk), .reset(reset), .Q(count[2]));
+    T_FlipFlop T1 (.T(TD), .clk(clk), .reset(reset), .Q(count[3]));
+    T_FlipFlop T0 (.T(TE), .clk(clk), .reset(reset), .Q(count[4]));
+	
+endmodule
+
+
+//_____________________________________________________________________________________________
+
+module T_FlipFlop(T, clk, reset, Q); 
+	input clk,reset,T;
+	output reg Q;
+	
+	always @(posedge clk or negedge reset)
+		if(~reset)
+			Q <= 1'b0;
+		else
+			if(T)
+				Q <= ~Q;
+			else
+				Q <= Q;
+endmodule
+
+//_____________________________________________________________________________________________
+
+module Counter_Testbench;
+	// Inputs
+	reg clk;
+	reg reset;
+	reg direction;
+	reg Enable;
+	reg selection;
+	
+	// Outputs
+	wire [4:0] count;
+	
+	// Instantiate the Counter module
+	Counter counter(
+		.clk(clk),
+		.reset(reset),
+		.direction(direction),
+		.Enable(Enable),
+		.selection(selection),
+		.count(count)
+	);
+	
+	// Clock generation
+	always #5 clk = ~clk;
+	
+	// Initialize inputs
+	initial begin
+		clk = 0;
+		reset = 1;
+		direction = 0;
+		Enable = 0;
+		selection = 0;
+		#10 reset = 0;
+	end
+	
+	// Stimulus
+	always begin
+		#20 Enable = 1;  // Enable the counter
+		#100 Enable = 0; // Disable the counter
+		
+		#20 reset = 1;  // Assert reset
+		#10 reset = 0; // Deassert reset
+		
+		#20 direction = 1; // Set direction to 1 (up)
+		#50 direction = 0; // Set direction to 0 (down)
+		
+		#20 selection = 1; // Set selection to 1 (Fibonacci)
+		#50 selection = 0; // Set selection to 0 (Prime)
+		
+		#200 $finish; // End simulation
+	end
+	
+endmodule
